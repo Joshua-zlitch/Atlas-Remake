@@ -15,11 +15,12 @@ import { AI08ReasoningVerification } from '../src/main/ai/ai08_reasoning_verific
 describe('Phase 5 AI Foundation Test Suite', () => {
   let at: ATRuntime;
   let ai: AIRuntime;
-  const atlasDataDir = path.join(process.cwd(), '.atlas-data');
+  const workerId = process.env.VITEST_WORKER_ID || '1';
+  const testDir = path.join(process.cwd(), '.atlas-test-data', workerId);
 
   beforeEach(() => {
-    if (fs.existsSync(atlasDataDir)) {
-      fs.rmSync(atlasDataDir, { recursive: true, force: true });
+    if (fs.existsSync(testDir)) {
+      fs.rmSync(testDir, { recursive: true, force: true });
     }
     at = new ATRuntime();
     ai = new AIRuntime(at);

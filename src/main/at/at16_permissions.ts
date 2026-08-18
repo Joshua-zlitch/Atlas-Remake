@@ -7,6 +7,8 @@ export class AT16PermissionAuthority {
     // Default safe policies
     this.customRules.set('filesystem:read', 'ALLOWED');
     this.customRules.set('filesystem:list', 'ALLOWED');
+    this.customRules.set('filesystem:attach', 'ALLOWED');
+    this.customRules.set('attachments:add', 'ALLOWED');
     this.customRules.set('system:info', 'ALLOWED');
     this.customRules.set('system:health', 'ALLOWED');
     this.customRules.set('guardian:health', 'ALLOWED');
@@ -15,6 +17,10 @@ export class AT16PermissionAuthority {
     this.customRules.set('memory:read', 'ALLOWED');
     this.customRules.set('memory:write', 'ALLOWED');
     this.customRules.set('process:list', 'ALLOWED');
+    this.customRules.set('app:launch', 'ALLOWED');
+    this.customRules.set('search:query', 'ALLOWED');
+    this.customRules.set('automation:list', 'ALLOWED');
+    this.customRules.set('notifications:send', 'ALLOWED');
 
     // Privileged capabilities default rules
     this.customRules.set('filesystem:write', 'ALLOWED');

@@ -7,10 +7,15 @@ export class LocalStorageManager<T> {
 
   constructor(filename: string, private defaultValue: T) {
     let baseDir: string;
-    try {
-      baseDir = app ? app.getPath('userData') : path.join(process.cwd(), '.atlas-data');
-    } catch {
-      baseDir = path.join(process.cwd(), '.atlas-data');
+    if (process.env.VITEST) {
+      const workerId = process.env.VITEST_WORKER_ID || 'default';
+      baseDir = path.join(process.cwd(), '.atlas-test-data', workerId);
+    } else {
+      try {
+        baseDir = app ? app.getPath('userData') : path.join(process.cwd(), '.atlas-data');
+      } catch {
+        baseDir = path.join(process.cwd(), '.atlas-data');
+      }
     }
     this.filePath = path.join(baseDir, filename);
   }
@@ -42,11 +47,20 @@ export class LocalStorageManager<T> {
       fs.mkdirSync(dir, { recursive: true });
     }
 
-    const tempPath = `${this.filePath}.tmp`;
     const jsonContent = JSON.stringify(data, null, 2);
 
-    fs.writeFileSync(tempPath, jsonContent, 'utf-8');
-    fs.renameSync(tempPath, this.filePath);
+    try {
+      const tempPath = `${this.filePath}.tmp`;
+      fs.writeFileSync(tempPath, jsonContent, 'utf-8');
+      try {
+        fs.renameSync(tempPath, this.filePath);
+      } catch {
+        fs.writeFileSync(this.filePath, jsonContent, 'utf-8');
+        if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+      }
+    } catch {
+      fs.writeFileSync(this.filePath, jsonContent, 'utf-8');
+    }
   }
 
   private createBackup(): void {

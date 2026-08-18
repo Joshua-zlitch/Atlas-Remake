@@ -37,10 +37,35 @@ export class AI08ReasoningVerification {
       };
     }
 
+    // Specific capability evidence verification
+    if (result.capabilityId === 'filesystem:write') {
+      const data = result.data as { bytesWritten?: number; success?: boolean };
+      if (!data.bytesWritten || data.bytesWritten <= 0) {
+        return {
+          verified: false,
+          confidenceScore: 0.4,
+          reason: 'Filesystem write completed but 0 bytes were written to disk',
+          evidenceProvided: true,
+        };
+      }
+    }
+
+    if (result.capabilityId === 'terminal:exec') {
+      const data = result.data as { exitCode?: number; stdout?: string };
+      if (typeof data.exitCode === 'number' && data.exitCode !== 0) {
+        return {
+          verified: false,
+          confidenceScore: 0.2,
+          reason: `Terminal execution returned non-zero exit code: ${data.exitCode}`,
+          evidenceProvided: true,
+        };
+      }
+    }
+
     return {
       verified: true,
       confidenceScore: 1.0,
-      reason: 'Tool execution verified with empirical result data payload',
+      reason: 'Tool execution empirically verified with valid evidence payload',
       evidenceProvided: true,
     };
   }

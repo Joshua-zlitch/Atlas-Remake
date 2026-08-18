@@ -30,7 +30,29 @@ export class AI06ToolOrchestrator {
       };
     }
 
-    // Step 1: Permission check via AT-16 Permissions Authority
+    // Step 0: Emit event that tool execution has been requested
+    this.atRuntime.events.emitEvent('tool:started', 'AI06ToolOrchestrator', { toolId: req.toolId, capabilityId: req.capabilityId });
+
+    // Step 1: Workspace path boundary check for filesystem capabilities
+    const targetPath = (req.params?.path || req.params?.filePath) ? String(req.params.path || req.params.filePath) : undefined;
+    if (req.capabilityId.startsWith('filesystem:') && targetPath) {
+      const wsCheck = this.atRuntime.workspace.validatePathInWorkspace(targetPath);
+      if (!wsCheck.valid) {
+        this.atRuntime.events.emitEvent('tool:failed', 'AI06ToolOrchestrator', { toolId: req.toolId, reason: 'Workspace boundary violation' });
+        return {
+          toolId: req.toolId,
+          capabilityId: req.capabilityId,
+          success: false,
+          permissionDecision: 'DENIED',
+          error: {
+            code: 'WORKSPACE_DENIAL',
+            message: `Path traversal denied: '${targetPath}' is outside the active workspace boundary`,
+          },
+        };
+      }
+    }
+
+    // Step 2: Permission check via AT-16 Permissions Authority
     const permReq: PermissionRequest = {
       capabilityId: req.capabilityId,
       resource: JSON.stringify(req.params || {}),
@@ -38,7 +60,10 @@ export class AI06ToolOrchestrator {
     };
 
     const permResult = this.atRuntime.permissions.evaluateRequest(permReq);
+    this.atRuntime.events.emitEvent('permission:decision', 'AI06ToolOrchestrator', { capabilityId: req.capabilityId, decision: permResult.decision });
+
     if (permResult.decision === 'DENIED') {
+      this.atRuntime.events.emitEvent('tool:failed', 'AI06ToolOrchestrator', { toolId: req.toolId, reason: permResult.reason });
       return {
         toolId: req.toolId,
         capabilityId: req.capabilityId,
@@ -48,8 +73,14 @@ export class AI06ToolOrchestrator {
       };
     }
 
-    // Step 2: Dispatch execution to owning AT module via ATRuntime
+    // Step 3: Dispatch execution to owning AT module via ATRuntime
     const dispatchRes = await this.atRuntime.dispatch(req.capabilityId, req.params);
+
+    if (dispatchRes.success) {
+      this.atRuntime.events.emitEvent('tool:completed', 'AI06ToolOrchestrator', { toolId: req.toolId, data: dispatchRes.data });
+    } else {
+      this.atRuntime.events.emitEvent('tool:failed', 'AI06ToolOrchestrator', { toolId: req.toolId, error: dispatchRes.error });
+    }
 
     return {
       toolId: req.toolId,
