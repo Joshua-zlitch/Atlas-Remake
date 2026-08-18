@@ -87,6 +87,17 @@ function Home() {
         setMessages(res.data.messages);
       }
     });
+
+    if (window.atlasAPI?.onEvent) {
+      const unsubStart = window.atlasAPI.onEvent("tool:started", () => setOrbState("processing"));
+      const unsubPerm = window.atlasAPI.onEvent("permission:decision", () => setOrbState("thinking"));
+      const unsubComplete = window.atlasAPI.onEvent("tool:completed", () => setOrbState("speaking"));
+      return () => {
+        unsubStart();
+        unsubPerm();
+        unsubComplete();
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -116,7 +127,7 @@ function Home() {
       setTimeout(() => setOrbState("idle"), 2600);
     } else {
       setOrbState("idle");
-      const errDetail = res.error?.message || "AI-01 LLM Runtime is scheduled for implementation in Phase 5.";
+      const errDetail = res.error?.message || "AI-01 LLM Runtime endpoint offline. Please ensure local model engine is running.";
       replyMsg = {
         id: id + 1,
         role: "atlas",
@@ -128,19 +139,23 @@ function Home() {
   };
 
   const handleAttachment = async () => {
-    const res = await invokeCapability("filesystem:attach");
-    toast("Attachment", {
-      description: res.error?.message || "AT-13 Files & Attachments scheduled for Phase 4.",
-    });
+    setOrbState("processing");
+    const res = await invokeCapability<{ filePath: string }, { name: string; relativePath: string }>("filesystem:attach", { filePath: "package.json" });
+    setOrbState("idle");
+    if (res.success && res.data) {
+      toast("Attachment Added", { description: `Attached file '${res.data.name}'` });
+    } else {
+      toast("Attachment Error", { description: res.error?.message || "Failed to attach file" });
+    }
   };
 
   const handleVoice = async () => {
     setOrbState("listening");
     const res = await invokeCapability("voice:listen");
-    toast("Voice Input", {
-      description: res.error?.message || "AT-14 Voice scheduled for Phase 4.",
-    });
     setTimeout(() => setOrbState("idle"), 1500);
+    toast("Voice Input", {
+      description: res.error?.message || "AT-14 Voice capability is scheduled for local engine integration.",
+    });
   };
 
   const empty = messages.length === 0;

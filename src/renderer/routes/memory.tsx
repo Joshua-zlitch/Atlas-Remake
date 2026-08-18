@@ -28,25 +28,66 @@ const importanceTone: Record<string, string> = {
   Low: "text-success border-success/30 bg-success/10",
 };
 
+import { useEffect, useMemo, useState } from "react";
+import { Trash2 } from "lucide-react";
+import { MemoryRecord } from "@shared/types";
+
 function Memory() {
+  const [items, setItems] = useState<MemoryRecord[]>(memories as unknown as MemoryRecord[]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
 
-  const handleNewMemory = async () => {
-    const res = await invokeCapability("memory:create");
-    toast("Memory Action", {
-      description: res.error?.message || "AT-08 Memory capability scheduled for Phase 4.",
+  const loadMemories = () => {
+    invokeCapability<undefined, MemoryRecord[]>("memory:list").then((res) => {
+      if (res.success && res.data && Array.isArray(res.data) && res.data.length > 0) {
+        setItems(res.data);
+      }
     });
+  };
+
+  useEffect(() => {
+    loadMemories();
+  }, []);
+
+  const handleNewMemory = async () => {
+    const title = window.prompt("Enter Memory Title:", "User Note");
+    if (!title) return;
+    const body = window.prompt("Enter Memory Content:", "Remembered note for Atlas.");
+    if (!body) return;
+
+    const res = await invokeCapability<{ title: string; body: string; category: string; importance: string }, MemoryRecord>("memory:add", {
+      title,
+      body,
+      category: category === "All" ? "Projects" : category,
+      importance: "Medium",
+    });
+
+    if (res.success && res.data) {
+      toast("Memory Saved", { description: `Added memory '${res.data.title}'` });
+      loadMemories();
+    } else {
+      toast("Error", { description: res.error?.message || "Failed to add memory" });
+    }
+  };
+
+  const handleDeleteMemory = async (id: string, title: string) => {
+    const res = await invokeCapability<{ id: string }, { deleted: boolean }>("memory:delete", { id });
+    if (res.success) {
+      toast("Memory Deleted", { description: `Removed '${title}'` });
+      loadMemories();
+    } else {
+      toast("Error", { description: res.error?.message || "Failed to delete memory" });
+    }
   };
 
   const filtered = useMemo(
     () =>
-      memories.filter(
+      items.filter(
         (m) =>
           (category === "All" || m.category === category) &&
           (m.title + m.body).toLowerCase().includes(query.toLowerCase()),
       ),
-    [query, category],
+    [items, query, category],
   );
 
   return (
@@ -101,7 +142,16 @@ function Memory() {
           >
             <div className="mb-3 flex items-start justify-between gap-3">
               <h3 className="text-[15px] font-semibold leading-snug">{m.title}</h3>
-              {m.pinned && <Pin className="h-4 w-4 shrink-0 text-primary" />}
+              <div className="flex items-center gap-2">
+                {m.pinned && <Pin className="h-4 w-4 shrink-0 text-primary" />}
+                <button
+                  onClick={() => handleDeleteMemory(m.id, m.title)}
+                  className="text-muted-foreground hover:text-danger transition-colors p-1"
+                  title="Delete Memory"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
             <p className="text-[13px] leading-relaxed text-muted-foreground">{m.body}</p>
             <div className="mt-5 flex items-center gap-2 text-[11px]">
