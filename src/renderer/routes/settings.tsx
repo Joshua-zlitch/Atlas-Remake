@@ -12,8 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { fetchAppVersion } from "@/lib/atlas";
-import { AppVersionInfo } from "@shared/types";
+import { fetchAppVersion, invokeCapability } from "@/lib/atlas";
+import { AppVersionInfo, AppSettings } from "@shared/types";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -64,14 +64,17 @@ function Row({
   );
 }
 
-function Toggle({ defaultOn = true, label }: { defaultOn?: boolean; label: string }) {
+function Toggle({ defaultOn = true, label, settingKey }: { defaultOn?: boolean; label: string; settingKey?: keyof AppSettings }) {
   const [on, setOn] = useState(defaultOn);
   return (
     <Switch
       checked={on}
       onCheckedChange={(v) => {
         setOn(v);
-        toast(label, { description: v ? "Enabled" : "Disabled" });
+        if (settingKey) {
+          invokeCapability("settings:set", { [settingKey]: v });
+        }
+        toast(label, { description: v ? "Enabled & Persisted" : "Disabled & Persisted" });
       }}
     />
   );

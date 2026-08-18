@@ -30,6 +30,8 @@ Thumbs.db
 
 # Testing
 coverage/
+.atlas-data/
+.atlas-test-data/
 
 # Vite / TanStack cache
 .vite/

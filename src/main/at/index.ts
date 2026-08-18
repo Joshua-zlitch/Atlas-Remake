@@ -15,6 +15,9 @@ import { AT14VoiceHandler } from './at14_voice.js';
 import { AT15VisionHandler } from './at15_vision.js';
 import { AT16PermissionAuthority } from './at16_permissions.js';
 import { AT17EventRuntime } from './at17_event_runtime.js';
+import { ConversationStore } from '../persistence/conversation_store.js';
+import { SettingsStore } from '../persistence/settings_store.js';
+import { TaskStore } from '../persistence/task_store.js';
 
 export class ATRuntime {
   public workspace: AT01WorkspaceManager;
@@ -34,6 +37,9 @@ export class ATRuntime {
   public attachments: AT13AttachmentManager;
   public voice: AT14VoiceHandler;
   public vision: AT15VisionHandler;
+  public conversations: ConversationStore;
+  public settings: SettingsStore;
+  public tasks: TaskStore;
 
   constructor() {
     this.workspace = new AT01WorkspaceManager();
@@ -53,6 +59,9 @@ export class ATRuntime {
     this.attachments = new AT13AttachmentManager(this.filesystem);
     this.voice = new AT14VoiceHandler();
     this.vision = new AT15VisionHandler();
+    this.conversations = new ConversationStore();
+    this.settings = new SettingsStore();
+    this.tasks = new TaskStore();
   }
 
   public async dispatch(capabilityId: string, params?: any): Promise<{ success: boolean; data?: any; error?: { code: string; message: string } }> {
@@ -94,6 +103,28 @@ export class ATRuntime {
           return { success: true, data: this.memory.addMemory(params) };
         case 'memory:delete':
           return { success: true, data: { deleted: this.memory.deleteMemory(params?.id) } };
+
+        // Conversation Persistence
+        case 'conversation:list':
+          return { success: true, data: this.conversations.getConversations() };
+        case 'conversation:get':
+          return { success: true, data: this.conversations.getConversation(params?.id || 'conv-default') };
+        case 'conversation:append':
+          return { success: true, data: this.conversations.appendMessage(params?.conversationId || 'conv-default', params?.message) };
+
+        // Settings Persistence
+        case 'settings:get':
+          return { success: true, data: this.settings.getSettings() };
+        case 'settings:set':
+          return { success: true, data: this.settings.updateSettings(params) };
+
+        // Task Persistence
+        case 'task:list':
+          return { success: true, data: this.tasks.getTasks() };
+        case 'task:save':
+          return { success: true, data: this.tasks.addTask(params?.title, params?.category || 'General') };
+        case 'task:update-status':
+          return { success: true, data: this.tasks.updateTaskStatus(params?.id, params?.status) };
 
         // AT-06 System Information
         case 'system:info':
@@ -154,7 +185,7 @@ export class ATRuntime {
             success: false,
             error: {
               code: 'CAPABILITY_UNAVAILABLE',
-              message: `Capability '${capabilityId}' is not registered or supported in Phase 3 foundation`,
+              message: `Capability '${capabilityId}' is not registered or supported in Phase 3/4 foundation`,
             },
           };
       }

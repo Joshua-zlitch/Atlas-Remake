@@ -97,6 +97,43 @@ export interface MemoryRecord {
   createdAt: string;
 }
 
+// Conversation Types
+export interface ChatMessage {
+  id: number;
+  role: 'user' | 'atlas';
+  text: string;
+  timestamp?: string;
+}
+
+export interface ConversationRecord {
+  id: string;
+  title: string;
+  projectId?: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: ChatMessage[];
+}
+
+// Application Settings Types
+export interface AppSettings {
+  theme: 'dark' | 'light' | 'system';
+  orbIntensity: number;
+  autoSummary: boolean;
+  notificationsEnabled: boolean;
+  activeWorkspaceId: string;
+  updatedAt: string;
+}
+
+// Task Types
+export interface TaskRecord {
+  id: string;
+  title: string;
+  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+  category: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
 // AT-04 Terminal Types
 export interface TerminalResult {
   command: string;

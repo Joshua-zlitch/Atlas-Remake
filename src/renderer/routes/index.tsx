@@ -82,6 +82,14 @@ function Home() {
   const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    invokeCapability<{ id: string }, { messages: Message[] }>("conversation:get", { id: "conv-default" }).then((res) => {
+      if (res.success && res.data && Array.isArray(res.data.messages) && res.data.messages.length > 0) {
+        setMessages(res.data.messages);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
 
@@ -89,7 +97,11 @@ function Home() {
     const text = value.trim();
     if (!text) return;
     const id = Date.now();
-    setMessages((m) => [...m, { id, role: "user", text }]);
+    const userMsg: Message = { id, role: "user", text };
+
+    setMessages((m) => [...m, userMsg]);
+    invokeCapability("conversation:append", { conversationId: "conv-default", message: userMsg });
+
     setValue("");
     setOrbState("thinking");
     setTyping(true);
@@ -97,22 +109,22 @@ function Home() {
     const res = await invokeCapability("ai:chat", { prompt: text });
 
     setTyping(false);
+    let replyMsg: Message;
     if (res.success && res.data) {
       setOrbState("speaking");
-      setMessages((m) => [...m, { id: id + 1, role: "atlas", text: String(res.data) }]);
+      replyMsg = { id: id + 1, role: "atlas", text: String(res.data) };
       setTimeout(() => setOrbState("idle"), 2600);
     } else {
       setOrbState("idle");
-      const errDetail = res.error?.message || "AI-01 LLM Runtime is scheduled for implementation in Phase 3.";
-      setMessages((m) => [
-        ...m,
-        {
-          id: id + 1,
-          role: "atlas",
-          text: `[Capability Unavailable] ${errDetail}`,
-        },
-      ]);
+      const errDetail = res.error?.message || "AI-01 LLM Runtime is scheduled for implementation in Phase 5.";
+      replyMsg = {
+        id: id + 1,
+        role: "atlas",
+        text: `[Capability Unavailable] ${errDetail}`,
+      };
     }
+    setMessages((m) => [...m, replyMsg]);
+    invokeCapability("conversation:append", { conversationId: "conv-default", message: replyMsg });
   };
 
   const handleAttachment = async () => {

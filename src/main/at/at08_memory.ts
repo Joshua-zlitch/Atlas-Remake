@@ -1,10 +1,10 @@
 import { MemoryRecord } from '../../shared/types.js';
+import { LocalStorageManager } from '../persistence/storage.js';
 
 export class AT08MemoryStore {
-  private memories: Map<string, MemoryRecord> = new Map();
+  private storage: LocalStorageManager<MemoryRecord[]>;
 
-  constructor() {
-    // Seed initial local memories
+  constructor(filename: string = 'memory.json') {
     const seed: MemoryRecord[] = [
       {
         id: 'mem-1',
@@ -23,11 +23,11 @@ export class AT08MemoryStore {
         createdAt: new Date().toISOString(),
       },
     ];
-    seed.forEach((m) => this.memories.set(m.id, m));
+    this.storage = new LocalStorageManager<MemoryRecord[]>(filename, seed);
   }
 
   public listMemories(category?: string): MemoryRecord[] {
-    const all = Array.from(this.memories.values());
+    const all = this.storage.load();
     if (category && category !== 'All') {
       return all.filter((m) => m.category === category);
     }
@@ -35,21 +35,31 @@ export class AT08MemoryStore {
   }
 
   public getMemory(id: string): MemoryRecord | undefined {
-    return this.memories.get(id);
+    const all = this.storage.load();
+    return all.find((m) => m.id === id);
   }
 
   public addMemory(record: Omit<MemoryRecord, 'id' | 'createdAt'>): MemoryRecord {
+    const all = this.storage.load();
     const id = 'mem-' + Date.now();
     const newRecord: MemoryRecord = {
       ...record,
       id,
       createdAt: new Date().toISOString(),
     };
-    this.memories.set(id, newRecord);
+    all.push(newRecord);
+    this.storage.save(all);
     return newRecord;
   }
 
   public deleteMemory(id: string): boolean {
-    return this.memories.delete(id);
+    const all = this.storage.load();
+    const index = all.findIndex((m) => m.id === id);
+    if (index !== -1) {
+      all.splice(index, 1);
+      this.storage.save(all);
+      return true;
+    }
+    return false;
   }
 }
