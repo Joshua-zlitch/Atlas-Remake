@@ -3,10 +3,9 @@ import { Orb } from "./Orb";
 export function Splash({ hiding }: { hiding: boolean }) {
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black transition-opacity duration-700"
+      className="fixed inset-0 z-[100] pointer-events-none flex flex-col items-center justify-center bg-black transition-opacity duration-700"
       style={{
         opacity: hiding ? 0 : 1,
-        pointerEvents: hiding ? "none" : "auto",
         transitionTimingFunction: "var(--ease-calm)",
       }}
     >
