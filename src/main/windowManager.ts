@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,8 +11,11 @@ let mainWindow: BrowserWindow | null = null;
 export function createMainWindow(): BrowserWindow {
   const isDev = process.env.NODE_ENV === 'development';
 
-  // Determine preload script path
-  const preloadPath = path.join(__dirname, '../preload/index.js');
+  // Determine preload script path cleanly across dev and dist layouts
+  let preloadPath = path.join(__dirname, '../../preload/preload/index.js');
+  if (!fs.existsSync(preloadPath)) {
+    preloadPath = path.join(__dirname, '../preload/index.js');
+  }
 
   mainWindow = new BrowserWindow({
     width: 1280,
