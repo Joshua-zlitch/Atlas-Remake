@@ -11,10 +11,14 @@ import { TaskStore } from '../src/main/persistence/task_store';
 
 describe('Phase 4 Data & Persistence Test Suite', () => {
   const testDir = path.join(process.cwd(), '.atlas-test-data');
+  const atlasDataDir = path.join(process.cwd(), '.atlas-data');
 
   beforeEach(() => {
     if (fs.existsSync(testDir)) {
       fs.rmSync(testDir, { recursive: true, force: true });
+    }
+    if (fs.existsSync(atlasDataDir)) {
+      fs.rmSync(atlasDataDir, { recursive: true, force: true });
     }
   });
 

@@ -8,6 +8,8 @@ export class AT16PermissionAuthority {
     this.customRules.set('filesystem:read', 'ALLOWED');
     this.customRules.set('filesystem:list', 'ALLOWED');
     this.customRules.set('system:info', 'ALLOWED');
+    this.customRules.set('system:health', 'ALLOWED');
+    this.customRules.set('guardian:health', 'ALLOWED');
     this.customRules.set('context:read', 'ALLOWED');
     this.customRules.set('context:write', 'ALLOWED');
     this.customRules.set('memory:read', 'ALLOWED');

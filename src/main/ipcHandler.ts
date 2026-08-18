@@ -1,6 +1,7 @@
 import { ipcMain, app } from 'electron';
 import { IPC_CHANNELS, IPCResponse, AppVersionInfo, SystemStatus } from '../shared/types.js';
 import { atRuntime } from './at/index.js';
+import { aiRuntime } from './ai/index.js';
 
 export function registerIPCHandlers(): void {
   // Handle Ping
@@ -31,19 +32,21 @@ export function registerIPCHandlers(): void {
   // Handle System Status
   ipcMain.handle(IPC_CHANNELS.GET_SYSTEM_STATUS, async (): Promise<IPCResponse<SystemStatus>> => {
     const health = atRuntime.guardian.getHealthCheck();
+    const llmOnline = aiRuntime.llm.isAvailable();
+
     return {
       success: true,
       data: {
         online: true,
         runtimeReady: true,
         guardianActive: health.active,
-        llmConnected: false, // Will be updated when AI-01 is implemented in Phase 5
+        llmConnected: llmOnline,
       },
       requestId: 'status-' + Date.now(),
     };
   });
 
-  // Handle Controlled Capability Invocations through AT Runtime Registry
+  // Handle Controlled Capability Invocations through AT/AI Runtime Registries
   ipcMain.handle(IPC_CHANNELS.CAPABILITY_INVOKE, async (_event, payload: unknown): Promise<IPCResponse<unknown>> => {
     if (!payload || typeof payload !== 'object') {
       return {
@@ -69,7 +72,9 @@ export function registerIPCHandlers(): void {
       };
     }
 
-    const result = await atRuntime.dispatch(capabilityId, params);
+    const result = capabilityId.startsWith('ai:')
+      ? await aiRuntime.dispatch(capabilityId, params)
+      : await atRuntime.dispatch(capabilityId, params);
 
     return {
       success: result.success,
