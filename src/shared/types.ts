@@ -45,6 +45,95 @@ export interface SystemStatus {
   llmConnected: boolean;
 }
 
+// AT-01 Workspace Types
+export interface WorkspaceInfo {
+  id: string;
+  name: string;
+  rootPath: string;
+  active: boolean;
+  createdAt: string;
+}
+
+// AT-02 Filesystem Types
+export interface FileItem {
+  name: string;
+  path: string;
+  relativePath: string;
+  isDirectory: boolean;
+  sizeBytes: number;
+  modifiedAt: string;
+}
+
+// AT-16 Permission Types
+export type PermissionLevel = 'ALLOWED' | 'DENIED' | 'PROMPT_REQUIRED';
+
+export interface PermissionRequest {
+  capabilityId: string;
+  resource: string;
+  action: string;
+}
+
+export interface PermissionResult {
+  decision: PermissionLevel;
+  reason?: string;
+}
+
+// AT-17 Event Types
+export interface RuntimeEvent<T = unknown> {
+  id: string;
+  type: string;
+  timestamp: string;
+  source: string;
+  payload: T;
+}
+
+// AT-08 Memory Types
+export interface MemoryRecord {
+  id: string;
+  title: string;
+  body: string;
+  category: string;
+  importance: 'High' | 'Medium' | 'Low';
+  createdAt: string;
+}
+
+// AT-04 Terminal Types
+export interface TerminalResult {
+  command: string;
+  exitCode: number;
+  stdout: string;
+  stderr: string;
+  durationMs: number;
+}
+
+// AT-03 Process Types
+export interface ProcessInfo {
+  pid: number;
+  name: string;
+  cpuPercent?: number;
+  memoryMb?: number;
+}
+
+// AT-10 Search Types
+export interface SearchResultItem {
+  id: string;
+  type: 'file' | 'memory' | 'context';
+  title: string;
+  snippet: string;
+  path?: string;
+  score: number;
+}
+
+// AT-11 Automation Types
+export interface AutomationItem {
+  id: string;
+  name: string;
+  description: string;
+  schedule: string;
+  enabled: boolean;
+  lastRun?: string;
+}
+
 export interface AtlasAPI {
   ping: () => Promise<string>;
   getAppVersion: () => Promise<AppVersionInfo>;
