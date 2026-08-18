@@ -33,7 +33,8 @@ export class AT04TerminalRunner {
     try {
       const { stdout, stderr } = await execAsync(command, {
         cwd: activeWorkspace.rootPath,
-        timeout: timeoutMs,
+        timeout: Math.min(timeoutMs, 30000), // Cap timeout at 30 seconds
+        maxBuffer: 1024 * 1024, // 1MB output buffer limit
       });
 
       return {

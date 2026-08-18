@@ -3,6 +3,14 @@ import { IPC_CHANNELS, IPCResponse, AppVersionInfo, SystemStatus } from '../shar
 import { atRuntime } from './at/index.js';
 import { aiRuntime } from './ai/index.js';
 
+function sanitizeErrorMessage(msg?: string): string {
+  if (!msg) return 'An unexpected error occurred';
+  // Strip raw system paths (e.g. C:\... or /Users/...) and internal stack traces
+  let clean = msg.replace(/([A-Z]:\\[^:\n\r]+|\/[^:\n\r]+)/g, '[local-path]');
+  clean = clean.split('\n')[0]; // Return single primary summary line
+  return clean;
+}
+
 export function registerIPCHandlers(): void {
   // Handle Ping
   ipcMain.handle(IPC_CHANNELS.PING, async (): Promise<IPCResponse<string>> => {
@@ -72,6 +80,19 @@ export function registerIPCHandlers(): void {
       };
     }
 
+    // Security: Enforce strict capability ID format (domain:action)
+    const capabilityRegex = /^[a-z0-9\-]+:[a-z0-9\-]+$/;
+    if (!capabilityRegex.test(capabilityId)) {
+      return {
+        success: false,
+        error: {
+          code: 'MALFORMED_CAPABILITY_ID',
+          message: `Capability identifier '${capabilityId}' is malformed or invalid`,
+        },
+        requestId: 'inv-' + Date.now(),
+      };
+    }
+
     const result = capabilityId.startsWith('ai:')
       ? await aiRuntime.dispatch(capabilityId, params)
       : await atRuntime.dispatch(capabilityId, params);
@@ -79,7 +100,12 @@ export function registerIPCHandlers(): void {
     return {
       success: result.success,
       data: result.data,
-      error: result.error,
+      error: result.error
+        ? {
+            code: result.error.code,
+            message: sanitizeErrorMessage(result.error.message),
+          }
+        : undefined,
       requestId: 'inv-' + Date.now(),
     };
   });

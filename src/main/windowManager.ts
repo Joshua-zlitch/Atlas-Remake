@@ -37,6 +37,23 @@ export function createMainWindow(): BrowserWindow {
     mainWindow.loadFile(indexPath);
   }
 
+  // Security: Deny creation of external popup windows
+  mainWindow.webContents.setWindowOpenHandler(() => {
+    return { action: 'deny' };
+  });
+
+  // Security: Restrict in-window navigation to authorized app origins
+  mainWindow.webContents.on('will-navigate', (event, navigationUrl) => {
+    const parsedUrl = new URL(navigationUrl);
+    if (isDev && parsedUrl.origin === 'http://localhost:5173') {
+      return;
+    }
+    if (parsedUrl.protocol === 'file:') {
+      return;
+    }
+    event.preventDefault();
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

@@ -41,11 +41,22 @@ export class AT01WorkspaceManager {
   }
 
   public validatePathInWorkspace(targetPath: string): { valid: boolean; resolvedPath: string; relativePath: string } {
-    const activeWs = this.getActiveWorkspace();
-    const rootPath = path.resolve(activeWs.rootPath);
-    const resolvedPath = path.resolve(rootPath, targetPath);
+    if (!targetPath || typeof targetPath !== 'string' || targetPath.includes('\0')) {
+      return { valid: false, resolvedPath: '', relativePath: '' };
+    }
 
-    const isInside = resolvedPath.startsWith(rootPath) || resolvedPath === rootPath;
+    let decodedPath = targetPath;
+    try {
+      decodedPath = decodeURIComponent(targetPath);
+    } catch {
+      // Ignore URI decode errors
+    }
+
+    const activeWs = this.getActiveWorkspace();
+    const rootPath = path.normalize(path.resolve(activeWs.rootPath));
+    const resolvedPath = path.normalize(path.resolve(rootPath, decodedPath));
+
+    const isInside = resolvedPath === rootPath || resolvedPath.startsWith(rootPath + path.sep);
     const relativePath = path.relative(rootPath, resolvedPath);
 
     return {

@@ -34,6 +34,11 @@ const atlasAPI: AtlasAPI = {
   },
 
   onEvent: (channel: string, callback: (data: unknown) => void): (() => void) => {
+    const allowedChannels = new Set(['tool:started', 'permission:decision', 'tool:completed', 'tool:failed', 'capability:dispatch', 'atlas:event-emit']);
+    if (!allowedChannels.has(channel)) {
+      throw new Error(`[Preload Security] Subscription to channel '${channel}' is restricted.`);
+    }
+
     const subscription = (_event: Electron.IpcRendererEvent, data: unknown) => callback(data);
     ipcRenderer.on(channel, subscription);
     return () => {
