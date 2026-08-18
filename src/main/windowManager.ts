@@ -37,7 +37,10 @@ export function createMainWindow(): BrowserWindow {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   } else {
-    const indexPath = path.join(__dirname, '../renderer/index.html');
+    let indexPath = path.join(__dirname, '../../renderer/index.html');
+    if (!fs.existsSync(indexPath)) {
+      indexPath = path.join(__dirname, '../renderer/index.html');
+    }
     mainWindow.loadFile(indexPath);
   }
 

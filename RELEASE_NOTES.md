@@ -72,7 +72,7 @@ Includes corruption recovery through backup restoration.
 ## Checksum
 
 - **Installer:** `ATLAS Desktop Setup 0.1.0.exe`
-- **SHA-256:** `1BFD3A8D929D0EAFB823D1140F8BFC673DC8F279CDB3E39BF2CFECB087D3DC65`
+- **SHA-256:** `7047C53EE226E8721B3C62C7BFCCA9486B0B258B4DB9627A979F681A0332A4C1`
 
 ## Validation
 
