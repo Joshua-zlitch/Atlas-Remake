@@ -2,7 +2,7 @@
   "name": "atlas-desktop",
   "version": "0.1.0",
   "description": "ATLAS Desktop Application",
-  "main": "dist/main/main.js",
+  "main": "dist/main/main/main.js",
   "private": true,
   "type": "module",
   "author": "Joshua-zlitch",
@@ -14,6 +14,7 @@
     "build:renderer": "vite build",
     "build": "npm run type-check && npm run build:main && npm run build:preload && npm run build:renderer",
     "package:test": "npm run build && electron-builder --dir",
+    "package:win": "npm run build && electron-builder --win",
     "type-check": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -37,7 +38,26 @@
       }
     ],
     "win": {
-      "target": "dir"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "dir",
+          "arch": ["x64"]
+        }
+      ],
+      "sign": "scripts/no-op-sign.cjs",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ATLAS Desktop",
+      "uninstallDisplayName": "ATLAS Desktop"
     }
   },
   "dependencies": {

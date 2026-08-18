@@ -32,7 +32,7 @@ describe('Phase 10 Production Build & Packaging Test Suite', () => {
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
 
     expect(pkg.name).toBe('atlas-desktop');
-    expect(pkg.main).toBe('dist/main/main.js');
+    expect(pkg.main).toBe('dist/main/main/main.js');
     expect(pkg.scripts['package:test']).toBeDefined();
     expect(pkg.build).toBeDefined();
     expect(pkg.build.appId).toBe('com.joshuazlitch.atlas');
