@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/atlas/PageHeader";
 import { Switch } from "@/components/ui/switch";
@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { fetchAppVersion } from "@/lib/atlas";
+import { AppVersionInfo } from "@shared/types";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -186,6 +188,44 @@ const content: Record<Category, { title: string; rows: React.ReactNode }> = {
 
 function Settings() {
   const [active, setActive] = useState<Category>("General");
+  const [versionInfo, setVersionInfo] = useState<AppVersionInfo | null>(null);
+
+  useEffect(() => {
+    fetchAppVersion().then(setVersionInfo);
+  }, []);
+
+  const dynamicContent = {
+    ...content,
+    About: {
+      title: "About",
+      rows: (
+        <>
+          <Row
+            title="Version"
+            description={`ATLAS Desktop v${versionInfo?.version || "0.1.0"} · Electron ${versionInfo?.electronVersion || "34.2.0"} (${versionInfo?.platform || "win32"})`}
+            control={<span className="text-[13px] text-muted-foreground">{versionInfo?.version || "0.1.0"}</span>}
+          />
+          <Row
+            title="Runtime System"
+            description={`Node ${versionInfo?.nodeVersion || "22.0.0"} · Chrome ${versionInfo?.chromeVersion || "132.0.0.0"}`}
+            control={<span className="text-[13px] text-muted-foreground font-mono">electron-main</span>}
+          />
+          <Row
+            title="Snapshot"
+            description="Create an encrypted archive of your workspace."
+            control={
+              <button
+                onClick={() => toast("Snapshot created", { description: "atlas-2026-08-18.snap" })}
+                className="rounded-xl border border-border px-4 py-2 text-[13px] transition-colors hover:border-primary/40"
+              >
+                Create
+              </button>
+            }
+          />
+        </>
+      ),
+    },
+  };
 
   return (
     <div className="px-10 py-8">
@@ -214,9 +254,9 @@ function Settings() {
 
         <section key={active} className="atlas-panel min-w-0 flex-1 animate-rise">
           <h2 className="border-b border-border/60 px-6 py-4 font-display text-[16px] font-semibold">
-            {content[active].title}
+            {dynamicContent[active].title}
           </h2>
-          {content[active].rows}
+          {dynamicContent[active].rows}
         </section>
       </div>
     </div>

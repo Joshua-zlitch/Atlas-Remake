@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Activity } from "lucide-react";
 import { guardianMetrics, guardianSeries } from "@/data/prototype";
 import { PageHeader } from "@/components/atlas/PageHeader";
 import { Orb } from "@/components/atlas/Orb";
 import { cn } from "@/lib/utils";
+import { fetchSystemStatus } from "@/lib/atlas";
+import { SystemStatus } from "@shared/types";
 
 export const Route = createFileRoute("/guardian")({
   head: () => ({
@@ -24,11 +27,19 @@ export const Route = createFileRoute("/guardian")({
 const toneClass = { success: "bg-success", warning: "bg-warning", danger: "bg-danger" } as const;
 
 function Guardian() {
+  const [status, setStatus] = useState<SystemStatus | null>(null);
+
+  useEffect(() => {
+    fetchSystemStatus().then(setStatus);
+  }, []);
+
+  const isHealthy = status ? status.guardianActive && status.runtimeReady : true;
+
   return (
     <div className="px-10 py-8">
       <PageHeader
         title="Guardian"
-        description="Continuous, local-only monitoring of the machine Atlas lives on. No telemetry ever leaves this device."
+        description="Continuous, local-only monitoring of the machine Atlas lives on. AT-07 Guardian watches system health locally."
       />
 
       <div className="mb-4 grid grid-cols-3 gap-4">
@@ -38,9 +49,11 @@ function Guardian() {
             <p className="text-[12px] uppercase tracking-[0.14em] text-muted-foreground">
               Atlas Status
             </p>
-            <p className="mt-1.5 font-display text-2xl font-semibold">Healthy</p>
+            <p className="mt-1.5 font-display text-2xl font-semibold">
+              {isHealthy ? "Healthy" : "Attention"}
+            </p>
             <p className="mt-2 flex items-center gap-2 text-[12px] text-success">
-              <ShieldCheck className="h-3.5 w-3.5" /> All checks passed
+              <ShieldCheck className="h-3.5 w-3.5" /> {status?.guardianActive ? "Guardian Active · IPC Ready" : "Local Checks Ready"}
             </p>
           </div>
         </div>

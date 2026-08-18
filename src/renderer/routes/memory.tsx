@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { memories, memoryCategories } from "@/data/prototype";
 import { PageHeader } from "@/components/atlas/PageHeader";
 import { cn } from "@/lib/utils";
+import { invokeCapability } from "@/lib/atlas";
 
 export const Route = createFileRoute("/memory")({
   head: () => ({
@@ -31,6 +32,13 @@ function Memory() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
 
+  const handleNewMemory = async () => {
+    const res = await invokeCapability("memory:create");
+    toast("Memory Action", {
+      description: res.error?.message || "AT-08 Memory capability scheduled for Phase 4.",
+    });
+  };
+
   const filtered = useMemo(
     () =>
       memories.filter(
@@ -48,7 +56,7 @@ function Memory() {
         description="Everything Atlas remembers for you. Stored locally, organised by importance and always yours to edit."
         action={
           <button
-            onClick={() => toast("Memory saved", { description: "New memory added locally." })}
+            onClick={handleNewMemory}
             className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-[13px] font-medium text-primary-foreground transition-all duration-300 hover:brightness-110 hover:shadow-[var(--shadow-glow)]"
           >
             <Plus className="h-4 w-4" /> New memory

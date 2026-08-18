@@ -24,6 +24,7 @@ import {
   workflows,
 } from "@/data/prototype";
 import { cn } from "@/lib/utils";
+import { invokeCapability } from "@/lib/atlas";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,12 +50,6 @@ interface Message {
   role: "user" | "atlas";
   text: string;
 }
-
-const replies = [
-  "Noted. I've saved that to memory and linked it to Project Atlas.",
-  "Everything looks healthy. Guardian reports no issues in the last 24 hours.",
-  "I can prepare that as part of your Morning Routine. It runs at 08:00 on weekdays.",
-];
 
 function DashCard({
   icon: Icon,
@@ -90,7 +85,7 @@ function Home() {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
 
-  const send = () => {
+  const send = async () => {
     const text = value.trim();
     if (!text) return;
     const id = Date.now();
@@ -98,15 +93,42 @@ function Home() {
     setValue("");
     setOrbState("thinking");
     setTyping(true);
-    setTimeout(() => {
+
+    const res = await invokeCapability("ai:chat", { prompt: text });
+
+    setTyping(false);
+    if (res.success && res.data) {
       setOrbState("speaking");
-      setTyping(false);
+      setMessages((m) => [...m, { id: id + 1, role: "atlas", text: String(res.data) }]);
+      setTimeout(() => setOrbState("idle"), 2600);
+    } else {
+      setOrbState("idle");
+      const errDetail = res.error?.message || "AI-01 LLM Runtime is scheduled for implementation in Phase 3.";
       setMessages((m) => [
         ...m,
-        { id: id + 1, role: "atlas", text: replies[m.length % replies.length] },
+        {
+          id: id + 1,
+          role: "atlas",
+          text: `[Capability Unavailable] ${errDetail}`,
+        },
       ]);
-      setTimeout(() => setOrbState("idle"), 2600);
-    }, 1600);
+    }
+  };
+
+  const handleAttachment = async () => {
+    const res = await invokeCapability("filesystem:attach");
+    toast("Attachment", {
+      description: res.error?.message || "AT-13 Files & Attachments scheduled for Phase 4.",
+    });
+  };
+
+  const handleVoice = async () => {
+    setOrbState("listening");
+    const res = await invokeCapability("voice:listen");
+    toast("Voice Input", {
+      description: res.error?.message || "AT-14 Voice scheduled for Phase 4.",
+    });
+    setTimeout(() => setOrbState("idle"), 1500);
   };
 
   const empty = messages.length === 0;
@@ -329,7 +351,7 @@ function Home() {
         >
           <button
             aria-label="Attach file"
-            onClick={() => toast("Attachment", { description: "Prototype only." })}
+            onClick={handleAttachment}
             className="rounded-xl p-2.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Paperclip className="h-[17px] w-[17px]" />
@@ -351,11 +373,7 @@ function Home() {
           />
           <button
             aria-label="Voice input"
-            onClick={() => {
-              setOrbState("listening");
-              toast("Listening", { description: "Voice capture is prototype only." });
-              setTimeout(() => setOrbState("idle"), 2600);
-            }}
+            onClick={handleVoice}
             className="rounded-xl p-2.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Mic className="h-[17px] w-[17px]" />

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { workflows } from "@/data/prototype";
 import { PageHeader } from "@/components/atlas/PageHeader";
 import { Switch } from "@/components/ui/switch";
+import { invokeCapability } from "@/lib/atlas";
 
 export const Route = createFileRoute("/automation")({
   head: () => ({
@@ -25,6 +26,14 @@ function Automation() {
   const [state, setState] = useState(() =>
     Object.fromEntries(workflows.map((w) => [w.id, w.enabled])),
   );
+
+  const handleToggle = async (wId: string, wName: string, enable: boolean) => {
+    setState((s) => ({ ...s, [wId]: enable }));
+    const res = await invokeCapability("automation:toggle", { workflowId: wId, enabled: enable });
+    toast(enable ? "Automation enabled" : "Automation paused", {
+      description: res.error?.message || `${wName} (AT-11 Automation capability scheduled for Phase 4)`,
+    });
+  };
 
   return (
     <div className="px-10 py-8">
@@ -49,10 +58,7 @@ function Automation() {
               </div>
               <Switch
                 checked={state[w.id]}
-                onCheckedChange={(v) => {
-                  setState((s) => ({ ...s, [w.id]: v }));
-                  toast(v ? "Automation enabled" : "Automation paused", { description: w.name });
-                }}
+                onCheckedChange={(v) => handleToggle(w.id, w.name, v)}
               />
             </div>
 
