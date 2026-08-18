@@ -1,0 +1,36 @@
+# Node dependencies
+node_modules/
+
+# Build outputs
+dist/
+out/
+build/
+.output/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Testing
+coverage/
+
+# Vite / TanStack cache
+.vite/
+.tanstack/

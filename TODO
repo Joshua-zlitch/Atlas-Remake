@@ -1,0 +1,1255 @@
+ATLAS IMPLEMENTATION TODO
+=========================
+
+STATUS:
+Documentation = COMPLETE
+Implementation = NOT STARTED / NEXT
+
+SOURCE OF TRUTH:
+- Locked ATLAS documentation
+- ATLAS Implementation Roadmap
+- Existing project files
+- Existing Git history
+
+CORE RULE:
+DO NOT EXPAND THE ARCHITECTURE.
+
+Do not:
+[ ] Create new modules
+[ ] Rename modules
+[ ] Split modules
+[ ] Merge modules
+[ ] Create duplicate responsibility modules
+[ ] Create new architecture layers
+[ ] Invent APIs/schemas/channels without project evidence
+[ ] Introduce OpenCode into ATLAS runtime
+[ ] Introduce MCP into ATLAS runtime
+[ ] Replace the approved Lovable UI unnecessarily
+
+Implementation loop:
+
+IMPLEMENT
+    ↓
+TEST
+    ↓
+VERIFY
+    ↓
+COMMIT
+    ↓
+NEXT
+
+
+============================================================
+PHASE 0 — REPOSITORY BASELINE
+============================================================
+
+Goal:
+Establish a clean and recoverable Git baseline.
+
+[ ] Verify ATLAS repository
+[ ] Verify Git configuration
+[ ] Verify current branch
+[ ] Verify working tree
+[ ] Review existing changes
+[ ] Verify .gitignore
+[ ] Check for tracked secrets
+[ ] Check for generated files
+[ ] Confirm development branch strategy
+[ ] Establish initial implementation baseline
+[ ] Create baseline commit when appropriate
+
+Git rules:
+
+[ ] Do not rewrite history
+[ ] Do not force-push
+[ ] Do not delete existing work
+[ ] Keep implementation recoverable through Git
+
+
+============================================================
+PHASE 1 — ENGINEERING FOUNDATION
+============================================================
+
+Goal:
+Create the actual ATLAS runtime foundation.
+
+------------------------------------------------------------
+1.1 PROJECT STRUCTURE
+------------------------------------------------------------
+
+[ ] Inspect existing project structure
+[ ] Compare project structure against 05_ENGINEERING
+[ ] Establish production source structure
+[ ] Separate renderer
+[ ] Separate Electron main/runtime
+[ ] Separate preload
+[ ] Establish shared types where required
+[ ] Establish tests
+[ ] Establish assets
+[ ] Establish configuration
+[ ] Do not create architecture outside locked specification
+
+------------------------------------------------------------
+1.2 ELECTRON
+------------------------------------------------------------
+
+[ ] Establish Electron main process
+[ ] Establish application lifecycle
+[ ] Establish window lifecycle
+[ ] Establish development/production separation
+[ ] Verify Electron starts
+[ ] Verify Electron closes cleanly
+
+------------------------------------------------------------
+1.3 REACT RENDERER
+------------------------------------------------------------
+
+[ ] Establish production React renderer
+[ ] Integrate existing Lovable UI foundation
+[ ] Preserve approved visual structure
+[ ] Verify renderer loads inside Electron
+
+------------------------------------------------------------
+1.4 TYPESCRIPT
+------------------------------------------------------------
+
+[ ] Configure TypeScript according to project
+[ ] Enable required strictness
+[ ] Verify type checking
+[ ] Resolve type errors
+
+------------------------------------------------------------
+1.5 VITE
+------------------------------------------------------------
+
+[ ] Establish Electron-compatible Vite configuration
+[ ] Remove prototype-only SSR requirements where required
+[ ] Preserve React
+[ ] Preserve Tailwind
+[ ] Preserve TanStack Router where compatible
+[ ] Verify renderer production build
+
+------------------------------------------------------------
+1.6 PRELOAD
+------------------------------------------------------------
+
+[ ] Establish preload layer
+[ ] Define secure renderer API boundary
+[ ] Expose only approved APIs
+[ ] Prevent unnecessary Node.js exposure
+[ ] Verify preload loads
+
+------------------------------------------------------------
+1.7 IPC
+------------------------------------------------------------
+
+[ ] Establish renderer ↔ runtime IPC boundary
+[ ] Validate IPC requests
+[ ] Establish safe IPC responses
+[ ] Prevent renderer direct privileged access
+[ ] Test IPC communication
+[ ] Verify IPC failure handling
+
+------------------------------------------------------------
+1.8 TESTING FOUNDATION
+------------------------------------------------------------
+
+[ ] Establish existing configured test framework
+[ ] Establish unit testing
+[ ] Establish integration testing
+[ ] Establish runtime testing
+[ ] Establish UI testing where required
+[ ] Verify tests execute
+
+------------------------------------------------------------
+1.9 ENGINEERING TOOLING
+------------------------------------------------------------
+
+[ ] Configure linting where defined
+[ ] Configure formatting where defined
+[ ] Configure type checking
+[ ] Configure build scripts
+[ ] Do not introduce unnecessary tooling
+
+------------------------------------------------------------
+PHASE 1 CHECKPOINT
+------------------------------------------------------------
+
+[ ] Electron launches
+[ ] React renderer loads
+[ ] Preload works
+[ ] IPC works
+[ ] Type checking works
+[ ] Basic build works
+[ ] Tests execute
+[ ] Git state is recoverable
+
+[ ] COMMIT PHASE 1
+
+
+============================================================
+PHASE 2 — LOVABLE UI MIGRATION
+============================================================
+
+Goal:
+Convert the approved Lovable prototype into the ATLAS renderer.
+
+IMPORTANT:
+Reuse the prototype.
+Do not rebuild the UI from scratch unless necessary.
+
+------------------------------------------------------------
+2.1 UI FOUNDATION
+------------------------------------------------------------
+
+[ ] Inspect actual Lovable project
+[ ] Preserve approved layout
+[ ] Preserve design system
+[ ] Preserve reusable components
+[ ] Preserve approved styling
+[ ] Preserve routing where compatible
+[ ] Preserve animations where compatible
+[ ] Preserve ATLAS Orb
+[ ] Preserve responsive behavior where required
+
+------------------------------------------------------------
+2.2 REMOVE PROTOTYPE-ONLY BEHAVIOR
+------------------------------------------------------------
+
+[ ] Identify static data
+[ ] Identify simulated AI behavior
+[ ] Identify setTimeout/mock behavior
+[ ] Identify fake Guardian metrics
+[ ] Identify fake automation behavior
+[ ] Identify fake persistence
+[ ] Identify placeholder voice behavior
+[ ] Identify placeholder attachment behavior
+[ ] Mark each prototype-only behavior for replacement
+
+------------------------------------------------------------
+2.3 PROTOTYPE INFRASTRUCTURE
+------------------------------------------------------------
+
+[ ] Identify SSR-only infrastructure
+[ ] Identify Nitro/SSR dependencies
+[ ] Identify Lovable-only development infrastructure
+[ ] Identify unnecessary web/SEO infrastructure
+[ ] Adapt/remove only what the actual Electron architecture requires
+[ ] Do not blindly delete dependencies
+
+------------------------------------------------------------
+2.4 ORB
+------------------------------------------------------------
+
+[ ] Locate authoritative orb.png
+[ ] Preserve orb.png
+[ ] Verify production asset path
+[ ] Verify renderer loads orb.png
+[ ] Do not replace with generated/CSS orb
+
+------------------------------------------------------------
+PHASE 2 CHECKPOINT
+------------------------------------------------------------
+
+[ ] Lovable UI renders inside Electron
+[ ] Approved visual foundation preserved
+[ ] Prototype-only behavior identified
+[ ] Prototype-only behavior separated from production runtime
+[ ] Orb loads correctly
+[ ] No unnecessary UI rewrite performed
+
+[ ] COMMIT PHASE 2
+
+
+============================================================
+PHASE 3 — AT RUNTIME FOUNDATION
+============================================================
+
+Goal:
+Implement the actual ATLAS capability layer.
+
+IMPORTANT:
+Implementation order does not change module ownership.
+
+------------------------------------------------------------
+3.1 AT-01 WORKSPACE
+------------------------------------------------------------
+
+[ ] Implement workspace ownership
+[ ] Establish workspace lifecycle
+[ ] Establish workspace boundaries
+[ ] Test workspace isolation
+
+------------------------------------------------------------
+3.2 AT-02 FILESYSTEM
+------------------------------------------------------------
+
+[ ] Implement filesystem capability
+[ ] Establish path validation
+[ ] Establish workspace restrictions
+[ ] Prevent path traversal
+[ ] Test filesystem operations
+
+------------------------------------------------------------
+3.3 AT-16 PERMISSIONS
+------------------------------------------------------------
+
+[ ] Implement permission authority
+[ ] Define permission checks according to locked architecture
+[ ] Protect privileged operations
+[ ] Test permission denial
+[ ] Test permission approval
+[ ] Verify no bypass path exists
+
+------------------------------------------------------------
+3.4 AT-17 EVENT RUNTIME
+------------------------------------------------------------
+
+[ ] Implement runtime event infrastructure
+[ ] Establish event lifecycle
+[ ] Connect runtime events where required
+[ ] Test event delivery
+
+------------------------------------------------------------
+3.5 AT-09 CONTEXT STORE
+------------------------------------------------------------
+
+[ ] Implement context persistence/storage
+[ ] Establish context boundaries
+[ ] Test context storage/retrieval
+
+------------------------------------------------------------
+3.6 AT-08 MEMORY
+------------------------------------------------------------
+
+[ ] Implement memory capability
+[ ] Establish persistent memory boundary
+[ ] Test memory storage
+[ ] Test memory retrieval
+
+------------------------------------------------------------
+3.7 AT-06 SYSTEM INFORMATION
+------------------------------------------------------------
+
+[ ] Implement system information capability
+[ ] Validate returned information
+[ ] Protect sensitive information
+
+------------------------------------------------------------
+3.8 AT-03 PROCESS
+------------------------------------------------------------
+
+[ ] Implement process capability
+[ ] Validate process operations
+[ ] Apply permissions
+[ ] Test process lifecycle
+
+------------------------------------------------------------
+3.9 AT-04 TERMINAL
+------------------------------------------------------------
+
+[ ] Implement terminal capability
+[ ] Apply permission boundary
+[ ] Validate commands/arguments
+[ ] Prevent unsafe execution
+[ ] Test terminal lifecycle
+
+------------------------------------------------------------
+3.10 AT-05 APPLICATION CONTROL
+------------------------------------------------------------
+
+[ ] Implement application-control capability
+[ ] Apply permission checks
+[ ] Test supported operations
+
+------------------------------------------------------------
+3.11 AT-07 GUARDIAN
+------------------------------------------------------------
+
+[ ] Implement Guardian capability
+[ ] Connect Guardian to security/runtime state
+[ ] Preserve AT-16 as permission authority
+[ ] Test Guardian behavior
+
+------------------------------------------------------------
+3.12 AT-10 SEARCH & RETRIEVAL
+------------------------------------------------------------
+
+[ ] Implement search/retrieval capability
+[ ] Establish result handling
+[ ] Establish safe result boundaries
+[ ] Test retrieval
+
+------------------------------------------------------------
+3.13 AT-11 AUTOMATION
+------------------------------------------------------------
+
+[ ] Implement automation capability
+[ ] Connect automation to runtime
+[ ] Connect task lifecycle where required
+[ ] Test automation
+
+------------------------------------------------------------
+3.14 AT-12 NOTIFICATIONS
+------------------------------------------------------------
+
+[ ] Implement notification capability
+[ ] Connect runtime notification events
+[ ] Test notifications
+
+------------------------------------------------------------
+3.15 AT-13 FILES & ATTACHMENTS
+------------------------------------------------------------
+
+[ ] Implement attachment capability
+[ ] Connect with AT-02 Filesystem
+[ ] Validate attachments
+[ ] Test attachment lifecycle
+
+------------------------------------------------------------
+3.16 AT-14 VOICE
+------------------------------------------------------------
+
+[ ] Implement voice capability according to actual project configuration
+[ ] Do not invent implementation
+[ ] Test only supported functionality
+
+------------------------------------------------------------
+3.17 AT-15 VISION
+------------------------------------------------------------
+
+[ ] Implement vision capability according to actual project configuration
+[ ] Do not invent implementation
+[ ] Test only supported functionality
+
+------------------------------------------------------------
+PHASE 3 CHECKPOINT
+------------------------------------------------------------
+
+[ ] AT capabilities operate through runtime
+[ ] Privileged operations are protected
+[ ] Permissions work
+[ ] Events work
+[ ] Workspace boundaries work
+[ ] Filesystem boundaries work
+[ ] Native capabilities are testable
+
+[ ] COMMIT PHASE 3
+
+
+============================================================
+PHASE 4 — DATA + PERSISTENCE
+============================================================
+
+Goal:
+Replace prototype-only state with real local persistence.
+
+------------------------------------------------------------
+4.1 PERSISTENT DATA
+------------------------------------------------------------
+
+[ ] Implement application state persistence
+[ ] Implement settings persistence
+[ ] Implement conversation persistence
+[ ] Implement memory persistence
+[ ] Implement task persistence
+[ ] Implement context persistence
+[ ] Implement workspace state persistence where required
+[ ] Keep user data outside immutable application resources
+
+------------------------------------------------------------
+4.2 DATA SAFETY
+------------------------------------------------------------
+
+[ ] Prevent development DB from entering production
+[ ] Prevent test data from entering production
+[ ] Prevent credentials from being stored improperly
+[ ] Establish data isolation
+[ ] Establish recovery behavior
+[ ] Establish migration behavior where required
+
+------------------------------------------------------------
+4.3 DATA TESTING
+------------------------------------------------------------
+
+[ ] Test create
+[ ] Test read
+[ ] Test update
+[ ] Test delete
+[ ] Test persistence after restart
+[ ] Test recovery
+[ ] Test data isolation
+
+[ ] COMMIT PHASE 4
+
+
+============================================================
+PHASE 5 — AI FOUNDATION
+============================================================
+
+Goal:
+Implement the locked AI architecture.
+
+------------------------------------------------------------
+5.1 AI-09 AI CONFIGURATION
+------------------------------------------------------------
+
+[ ] Implement AI configuration
+[ ] Establish model configuration
+[ ] Establish local runtime configuration
+[ ] Validate configuration
+
+------------------------------------------------------------
+5.2 AI-01 LLM RUNTIME
+------------------------------------------------------------
+
+[ ] Connect ATLAS to local LLM runtime
+[ ] Establish runtime lifecycle
+[ ] Handle unavailable runtime
+[ ] Handle unavailable model
+[ ] Test inference
+[ ] Test failure handling
+
+------------------------------------------------------------
+5.3 AI-02 CONVERSATION
+------------------------------------------------------------
+
+[ ] Implement conversation state
+[ ] Connect conversation to LLM
+[ ] Connect conversation to persistence
+[ ] Test conversation lifecycle
+
+------------------------------------------------------------
+5.4 AI-03 CONTEXT ENGINE
+------------------------------------------------------------
+
+[ ] Implement context construction
+[ ] Connect relevant context sources
+[ ] Bound context size
+[ ] Prevent unnecessary raw tool output injection
+[ ] Test context construction
+
+------------------------------------------------------------
+5.5 AI-04 MEMORY INTELLIGENCE
+------------------------------------------------------------
+
+[ ] Implement memory intelligence
+[ ] Connect AI memory behavior to AT-08
+[ ] Test memory creation
+[ ] Test memory retrieval
+[ ] Test memory relevance
+
+------------------------------------------------------------
+5.6 AI-05 PLANNER
+------------------------------------------------------------
+
+[ ] Implement planning
+[ ] Establish plan lifecycle
+[ ] Connect plans to tasks
+[ ] Connect plans to tools
+[ ] Test planning
+
+------------------------------------------------------------
+5.7 AI-06 TOOL ORCHESTRATOR
+------------------------------------------------------------
+
+[ ] Implement tool discovery
+[ ] Implement tool selection coordination
+[ ] Validate tool requests
+[ ] Validate tool arguments
+[ ] Apply permissions
+[ ] Execute through owning AT capability
+[ ] Normalize tool results
+[ ] Implement tool chaining
+[ ] Implement timeout handling
+[ ] Implement cancellation
+[ ] Implement safe retry behavior
+[ ] Handle tool failures
+[ ] Treat tool output as untrusted
+[ ] Test tool orchestration
+
+------------------------------------------------------------
+5.8 AI-07 TASK MANAGER
+------------------------------------------------------------
+
+[ ] Implement task lifecycle
+[ ] Connect tasks to planner
+[ ] Connect tasks to tool execution
+[ ] Track task progress
+[ ] Track task failure
+[ ] Track task completion
+[ ] Test task lifecycle
+
+------------------------------------------------------------
+5.9 AI-08 REASONING & VERIFICATION
+------------------------------------------------------------
+
+[ ] Implement verification
+[ ] Verify tool outcomes where required
+[ ] Verify task outcomes
+[ ] Prevent tool success from automatically meaning task success
+[ ] Test verification failures
+[ ] Test successful verification
+
+------------------------------------------------------------
+AI RULES
+------------------------------------------------------------
+
+[ ] Model output is treated as untrusted
+[ ] Tool calls require validation
+[ ] Permissions cannot be bypassed
+[ ] Tool output does not automatically become trusted instructions
+[ ] Verification remains separate from tool execution
+[ ] OpenCode is NOT an ATLAS runtime dependency
+[ ] MCP is NOT an ATLAS runtime dependency
+[ ] Local LLM architecture remains authoritative
+
+[ ] COMMIT PHASE 5
+
+
+============================================================
+PHASE 6 — AI ↔ AT INTEGRATION
+============================================================
+
+Goal:
+Allow the AI system to safely operate real ATLAS capabilities.
+
+------------------------------------------------------------
+6.1 BASIC FLOW
+------------------------------------------------------------
+
+[ ] User request reaches AI-02
+[ ] AI-03 constructs context
+[ ] AI-01 performs inference
+[ ] AI-05 plans when required
+[ ] AI-06 coordinates tools
+[ ] AT-16 checks permissions
+[ ] AT capability executes
+[ ] AT-17 emits relevant events
+[ ] AI-08 verifies result where required
+[ ] AI-02/UI receives result
+
+------------------------------------------------------------
+6.2 SAFETY
+------------------------------------------------------------
+
+[ ] Validate every tool request
+[ ] Validate every tool argument
+[ ] Validate tool availability
+[ ] Validate permissions
+[ ] Prevent arbitrary tool execution
+[ ] Prevent prompt injection from directly authorizing tools
+[ ] Prevent malicious tool output from becoming automatic instructions
+[ ] Prevent cross-workspace access
+[ ] Prevent sensitive-data leakage
+
+------------------------------------------------------------
+6.3 TOOL STATES
+------------------------------------------------------------
+
+[ ] AVAILABLE
+[ ] REQUESTED
+[ ] VALIDATING
+[ ] WAITING_FOR_PERMISSION
+[ ] RUNNING
+[ ] COMPLETED
+[ ] FAILED
+[ ] CANCELLED
+[ ] TIMEOUT
+
+Only implement states supported by the actual runtime.
+
+[ ] COMMIT PHASE 6
+
+
+============================================================
+PHASE 7 — UX ↔ RUNTIME INTEGRATION
+============================================================
+
+Goal:
+Replace prototype data/behavior with real ATLAS runtime behavior.
+
+------------------------------------------------------------
+7.1 UX-01 APP SHELL
+------------------------------------------------------------
+
+[ ] Connect App Shell to real runtime state
+[ ] Verify window/application state
+
+------------------------------------------------------------
+7.2 UX-02 INTERACTION SYSTEM
+------------------------------------------------------------
+
+[ ] Connect user interactions to real runtime operations
+[ ] Verify input states
+[ ] Verify interaction feedback
+
+------------------------------------------------------------
+7.3 UX-03 STATE VISUALIZATION
+------------------------------------------------------------
+
+[ ] Connect loading state
+[ ] Connect running state
+[ ] Connect success state
+[ ] Connect failure state
+[ ] Connect permission state
+[ ] Connect task state
+[ ] Connect tool state
+
+------------------------------------------------------------
+7.4 UX-04 CONTEXT & PRESENTATION
+------------------------------------------------------------
+
+[ ] Connect context display
+[ ] Connect conversation data
+[ ] Connect task data
+[ ] Connect runtime data
+[ ] Connect notifications
+[ ] Preserve approved presentation
+
+------------------------------------------------------------
+7.5 UI VALIDATION
+------------------------------------------------------------
+
+[ ] Navigation
+[ ] Conversation
+[ ] Workspace
+[ ] Memory
+[ ] Guardian
+[ ] Automation
+[ ] Settings
+[ ] Notifications
+[ ] Attachments
+[ ] Voice where implemented
+[ ] Vision where implemented
+[ ] Loading states
+[ ] Empty states
+[ ] Error states
+[ ] Permission states
+[ ] Runtime states
+
+[ ] COMMIT PHASE 7
+
+
+============================================================
+PHASE 8 — SECURITY HARDENING
+============================================================
+
+Goal:
+Validate trust boundaries.
+
+------------------------------------------------------------
+8.1 IPC
+------------------------------------------------------------
+
+[ ] Validate renderer IPC requests
+[ ] Validate preload exposure
+[ ] Prevent direct privileged Node access
+[ ] Validate IPC responses
+[ ] Test IPC abuse
+
+------------------------------------------------------------
+8.2 FILESYSTEM
+------------------------------------------------------------
+
+[ ] Test path traversal
+[ ] Test workspace isolation
+[ ] Test unauthorized file access
+[ ] Test permission denial
+
+------------------------------------------------------------
+8.3 PROCESS / TERMINAL
+------------------------------------------------------------
+
+[ ] Test unsafe arguments
+[ ] Test permission enforcement
+[ ] Test command validation
+[ ] Test process restrictions
+
+------------------------------------------------------------
+8.4 AI SECURITY
+------------------------------------------------------------
+
+[ ] Test prompt injection
+[ ] Test malicious tool arguments
+[ ] Test malicious tool output
+[ ] Test sensitive-data exposure
+[ ] Test unauthorized tool execution
+[ ] Test permission bypass attempts
+
+------------------------------------------------------------
+8.5 DATA SECURITY
+------------------------------------------------------------
+
+[ ] Verify credentials are protected
+[ ] Verify user data isolation
+[ ] Verify development data exclusion
+[ ] Verify private files are not unnecessarily exposed
+
+[ ] COMMIT PHASE 8
+
+
+============================================================
+PHASE 9 — INTEGRATION TESTING
+============================================================
+
+Goal:
+Test the complete system.
+
+------------------------------------------------------------
+9.1 TESTING LAYERS
+------------------------------------------------------------
+
+[ ] Unit tests
+[ ] Integration tests
+[ ] IPC tests
+[ ] Runtime tests
+[ ] AI tests
+[ ] Data/persistence tests
+[ ] Security tests
+[ ] UI tests
+[ ] End-to-end tests
+
+------------------------------------------------------------
+9.2 CONVERSATION FLOW
+------------------------------------------------------------
+
+[ ] UI
+→ [ ] IPC
+→ [ ] AI-02
+→ [ ] AI-03
+→ [ ] AI-01
+→ [ ] Local LLM
+→ [ ] Response
+→ [ ] UI
+
+------------------------------------------------------------
+9.3 TOOL FLOW
+------------------------------------------------------------
+
+[ ] User request
+→ [ ] AI
+→ [ ] AI-06
+→ [ ] AT-16
+→ [ ] AT capability
+→ [ ] Result
+→ [ ] AI-08
+→ [ ] UI
+
+------------------------------------------------------------
+9.4 MEMORY FLOW
+------------------------------------------------------------
+
+[ ] Conversation
+→ [ ] AI-04
+→ [ ] AT-08
+→ [ ] Persistent memory
+→ [ ] Future retrieval
+→ [ ] AI-03
+→ [ ] LLM
+
+------------------------------------------------------------
+9.5 TASK FLOW
+------------------------------------------------------------
+
+[ ] User goal
+→ [ ] AI-05
+→ [ ] AI-07
+→ [ ] AI-06
+→ [ ] AT capability
+→ [ ] AI-08
+→ [ ] Completion
+
+------------------------------------------------------------
+9.6 WORKSPACE FLOW
+------------------------------------------------------------
+
+[ ] User
+→ [ ] UX
+→ [ ] IPC
+→ [ ] AT-01
+→ [ ] AT-02
+→ [ ] Workspace/filesystem
+→ [ ] UI
+
+------------------------------------------------------------
+PHASE 9 CHECKPOINT
+------------------------------------------------------------
+
+[ ] All critical integration flows pass
+[ ] Failures are accurately reported
+[ ] Security boundaries remain intact
+[ ] No test is marked passed without evidence
+
+[ ] COMMIT PHASE 9
+
+
+============================================================
+PHASE 10 — PRODUCTION BUILD
+============================================================
+
+Goal:
+Produce a verified production build.
+
+[ ] Verify Git state
+[ ] Validate dependencies
+[ ] Validate environment
+[ ] Run type checking
+[ ] Run linting where configured
+[ ] Run tests
+[ ] Build renderer
+[ ] Build Electron main
+[ ] Build preload
+[ ] Validate assets
+[ ] Apply production configuration
+[ ] Generate production artifact
+[ ] Verify artifact
+[ ] Launch production build
+[ ] Run smoke test
+
+------------------------------------------------------------
+PRODUCTION SECURITY
+------------------------------------------------------------
+
+[ ] No secrets
+[ ] No credentials
+[ ] No user data
+[ ] No development database
+[ ] No test data
+[ ] No unnecessary debug files
+[ ] No OpenCode runtime
+[ ] No MCP development server
+[ ] No developer-specific paths
+
+------------------------------------------------------------
+ASSET VALIDATION
+------------------------------------------------------------
+
+[ ] orb.png exists
+[ ] Correct orb.png is used
+[ ] Production path resolves
+[ ] No placeholder orb exists
+
+[ ] COMMIT PHASE 10
+
+
+============================================================
+PHASE 11 — WINDOWS PACKAGING
+============================================================
+
+Goal:
+Produce validated Windows distributables.
+
+------------------------------------------------------------
+11.1 EXE
+------------------------------------------------------------
+
+[ ] Generate EXE using actual configured packaging system
+[ ] Verify EXE exists
+[ ] Verify application identity
+[ ] Verify version
+[ ] Verify integrity
+[ ] Test installation/launch
+[ ] Test application
+[ ] Test uninstall
+
+------------------------------------------------------------
+11.2 MSI
+------------------------------------------------------------
+
+[ ] Generate MSI using actual configured packaging system
+[ ] Verify MSI exists
+[ ] Verify Windows Installer metadata
+[ ] Verify application identity
+[ ] Verify version
+[ ] Test clean installation
+[ ] Test launch
+[ ] Test upgrade
+[ ] Test uninstall
+
+------------------------------------------------------------
+11.3 USER DATA
+------------------------------------------------------------
+
+[ ] Application resources separate from user data
+[ ] Installation does not delete user data
+[ ] Upgrade preserves user data
+[ ] Uninstall follows defined data policy
+
+------------------------------------------------------------
+11.4 SECURITY
+------------------------------------------------------------
+
+[ ] No secrets packaged
+[ ] No development data packaged
+[ ] No OpenCode packaged
+[ ] No MCP packaged
+[ ] Signing handled according to actual configuration
+[ ] Signing secrets not committed
+
+[ ] COMMIT PHASE 11
+
+
+============================================================
+PHASE 12 — WINDOWS VALIDATION
+============================================================
+
+Goal:
+Verify ATLAS as a real installed Windows application.
+
+------------------------------------------------------------
+CLEAN INSTALL
+------------------------------------------------------------
+
+[ ] Installer launches
+[ ] Installation completes
+[ ] ATLAS launches
+[ ] Main window loads
+[ ] Renderer loads
+[ ] Orb loads
+[ ] IPC initializes
+[ ] Local LLM connection works where available
+[ ] Basic AI interaction works
+[ ] User data initializes correctly
+
+------------------------------------------------------------
+APPLICATION
+------------------------------------------------------------
+
+[ ] Navigation
+[ ] Conversation
+[ ] Workspace
+[ ] Filesystem
+[ ] Permissions
+[ ] Memory
+[ ] Tasks
+[ ] Tool execution
+[ ] Verification
+[ ] Notifications
+[ ] Settings
+[ ] Shutdown
+
+------------------------------------------------------------
+UPGRADE
+------------------------------------------------------------
+
+[ ] Install previous supported version
+[ ] Install new version
+[ ] Verify user data remains
+[ ] Verify configuration remains compatible
+[ ] Verify application launches
+[ ] Verify database migration where applicable
+
+------------------------------------------------------------
+UNINSTALL
+------------------------------------------------------------
+
+[ ] Application files removed
+[ ] Shortcuts removed where configured
+[ ] Application process terminates
+[ ] User data follows defined preservation policy
+[ ] Uninstaller exits successfully
+
+[ ] COMMIT PHASE 12
+
+
+============================================================
+PHASE 13 — RELEASE APPROVAL
+============================================================
+
+Use:
+
+07_RELEASE/RELEASE_CHECKLIST.md
+
+Release status:
+
+[ ] READY
+[ ] BLOCKED
+[ ] CONDITIONAL
+
+READY only if all mandatory checks pass.
+
+BLOCKED if any mandatory check fails.
+
+CONDITIONAL only if an explicitly accepted non-critical issue exists.
+
+Do NOT mark READY because:
+
+[ ] Compilation succeeded
+[ ] Development server worked
+[ ] UI preview worked
+[ ] AI produced one response
+
+Require actual evidence.
+
+------------------------------------------------------------
+FINAL CHECK
+------------------------------------------------------------
+
+[ ] Documentation locked
+[ ] Architecture preserved
+[ ] Module count preserved
+[ ] UI validated
+[ ] AI validated
+[ ] IPC validated
+[ ] Security validated
+[ ] Data validated
+[ ] Local LLM validated
+[ ] Tests passed
+[ ] Production build passed
+[ ] EXE validated
+[ ] MSI validated
+[ ] Windows validation passed
+[ ] Release checklist passed
+[ ] Git state reviewed
+
+
+============================================================
+PHASE 14 — FINAL GIT RELEASE
+============================================================
+
+[ ] Review Git status
+[ ] Review Git diff
+[ ] Verify intended changes
+[ ] Verify no secrets
+[ ] Verify no generated junk
+[ ] Verify documentation state
+[ ] Verify test results
+[ ] Verify build result
+[ ] Verify EXE
+[ ] Verify MSI
+[ ] Record source commit/version
+[ ] Commit final release state according to GIT_WORKFLOW.md
+
+DO NOT:
+
+[ ] Rewrite history
+[ ] Force-push
+[ ] Delete history
+[ ] Delete unrelated files
+[ ] Automatically alter unrelated code
+
+
+============================================================
+CODING AGENT EXECUTION RULES
+============================================================
+
+RULE 01:
+Read the relevant locked documentation BEFORE implementing a phase.
+
+RULE 02:
+Inspect the actual repository BEFORE inventing files or code.
+
+RULE 03:
+Never assume a missing implementation means a new module is required.
+
+RULE 04:
+Use existing module ownership.
+
+RULE 05:
+Do not create duplicate responsibilities.
+
+RULE 06:
+Do not expand the module architecture.
+
+RULE 07:
+Do not modify locked documentation unless explicitly authorized.
+
+RULE 08:
+Do not introduce OpenCode into ATLAS runtime.
+
+RULE 09:
+Do not introduce MCP into ATLAS runtime.
+
+RULE 10:
+Treat model output as untrusted.
+
+RULE 11:
+Validate tool requests.
+
+RULE 12:
+Respect AT-16 permissions.
+
+RULE 13:
+Keep AI-08 verification separate from tool execution.
+
+RULE 14:
+Keep AI-07 task ownership.
+
+RULE 15:
+Keep AI-06 tool orchestration ownership.
+
+RULE 16:
+Keep AT modules responsible for capabilities.
+
+RULE 17:
+Keep UX modules responsible for UI/interaction.
+
+RULE 18:
+Keep REL-01 responsible for packaging/release.
+
+RULE 19:
+Do not claim something works without testing it.
+
+RULE 20:
+Do not claim a migration is complete without evidence.
+
+RULE 21:
+Do not invent APIs, schemas, IPC channels, commands, versions, or paths.
+
+RULE 22:
+Prefer inspecting existing code over guessing.
+
+RULE 23:
+After each meaningful implementation unit:
+
+IMPLEMENT
+→ TEST
+→ VERIFY
+→ COMMIT
+
+RULE 24:
+If a genuine architectural contradiction appears:
+
+STOP
+→ DOCUMENT THE CONFLICT
+→ RESOLVE IT
+→ CONTINUE
+
+Do not silently change the architecture.
+
+RULE 25:
+Keep the repository recoverable through Git at all times.
+
+
+============================================================
+FINAL SUCCESS CONDITION
+============================================================
+
+ATLAS implementation is considered complete only when:
+
+[ ] All locked modules are implemented to their defined responsibilities
+[ ] UI is integrated
+[ ] Runtime is integrated
+[ ] AI is integrated
+[ ] Data persistence works
+[ ] IPC works
+[ ] Security boundaries work
+[ ] Integration tests pass
+[ ] Production build passes
+[ ] EXE works
+[ ] MSI works
+[ ] Windows installation works
+[ ] Upgrade works
+[ ] Uninstallation works
+[ ] User data is preserved according to policy
+[ ] Release checklist passes
+[ ] Final Git state is recorded
+
+FINAL RULE:
+
+DO NOT EXPAND THE PLAN.
+
+BUILD WHAT IS LOCKED.
+
+IMPLEMENT → TEST → VERIFY → COMMIT.

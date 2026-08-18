@@ -1,0 +1,356 @@
+@import "tailwindcss" source(none);
+@source ".";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@theme inline {
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-accent-soft: var(--accent-soft);
+}
+
+:root {
+  --radius: 1.125rem;
+
+  /* Atlas core palette */
+  --background: oklch(0.18 0.017 265);
+  --foreground: oklch(1 0 0);
+  --surface: oklch(0.223 0.019 266);
+  --surface-2: oklch(0.28 0.024 266);
+  --card: oklch(0.223 0.019 266);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.223 0.019 266);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.667 0.164 262.5);
+  --primary-foreground: oklch(0.16 0.02 265);
+  --accent-soft: oklch(0.769 0.115 258);
+  --secondary: oklch(0.28 0.024 266);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.28 0.024 266);
+  --muted-foreground: oklch(0.79 0.024 259);
+  --accent: oklch(0.32 0.03 266);
+  --accent-foreground: oklch(1 0 0);
+  --success: oklch(0.812 0.176 158);
+  --warning: oklch(0.847 0.144 85);
+  --danger: oklch(0.687 0.176 12);
+  --destructive: oklch(0.687 0.176 12);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.667 0.164 262.5 / 60%);
+  --chart-1: oklch(0.667 0.164 262.5);
+  --chart-2: oklch(0.769 0.115 258);
+  --chart-3: oklch(0.812 0.176 158);
+  --chart-4: oklch(0.847 0.144 85);
+  --chart-5: oklch(0.687 0.176 12);
+  --sidebar: oklch(0.2 0.018 265);
+  --sidebar-foreground: oklch(0.79 0.024 259);
+  --sidebar-primary: oklch(0.667 0.164 262.5);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.28 0.024 266);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(1 0 0 / 7%);
+  --sidebar-ring: oklch(0.667 0.164 262.5);
+
+  /* Atlas Orb state palette (orb-only, does not affect UI chrome) */
+  --orb-idle: oklch(0.623 0.214 259.8);
+  --orb-idle-soft: oklch(0.82 0.11 256);
+  --orb-listening: oklch(0.79 0.108 226);
+  --orb-listening-soft: oklch(0.9 0.068 220);
+  --orb-thinking: oklch(0.723 0.168 295);
+  --orb-thinking-soft: oklch(0.868 0.088 295);
+  --orb-speaking: oklch(0.623 0.214 259.8);
+  --orb-speaking-soft: oklch(0.82 0.11 256);
+  --orb-processing: oklch(0.769 0.166 70.1);
+  --orb-processing-soft: oklch(0.9 0.11 78);
+
+  --glass: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--surface) 88%, white 6%),
+    color-mix(in oklab, var(--background) 92%, transparent)
+  );
+  --shadow-soft: 0 1px 0 0 oklch(1 0 0 / 5%) inset, 0 18px 40px -24px oklch(0 0 0 / 80%);
+  --shadow-glow: 0 0 60px -12px color-mix(in oklab, var(--primary) 55%, transparent);
+  --ease-calm: cubic-bezier(0.22, 0.8, 0.28, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(1 0 0 / 10%);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(1 0 0 / 18%);
+    background-clip: content-box;
+  }
+}
+
+@utility atlas-panel {
+  background-image: var(--glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility atlas-lift {
+  transition:
+    transform 0.35s var(--ease-calm),
+    border-color 0.35s var(--ease-calm),
+    box-shadow 0.35s var(--ease-calm),
+    background-color 0.35s var(--ease-calm);
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--primary) 35%, transparent);
+    box-shadow: var(--shadow-soft), 0 0 40px -22px var(--primary);
+  }
+}
+
+@keyframes atlas-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+
+@keyframes atlas-spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes atlas-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes atlas-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes atlas-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes atlas-ripple {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+@keyframes atlas-orbit-light {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.4;
+  }
+}
+
+@utility animate-rise {
+  animation: atlas-rise 0.5s var(--ease-calm) both;
+}
+
+@keyframes atlas-wave {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scaleY(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.15);
+  }
+}
+
+@keyframes atlas-particle {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.6);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-16px) scale(1);
+  }
+}
+
+@keyframes atlas-blink {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  45%,
+  55% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes atlas-talk {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-2px) scaleY(1.05);
+  }
+}
+
+@keyframes atlas-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    filter: brightness(0.9);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.35);
+  }
+}
+
+@keyframes atlas-ring-flare {
+  0%,
+  82%,
+  100% {
+    opacity: 0.25;
+  }
+  88% {
+    opacity: 1;
+  }
+}
+
+@keyframes atlas-ring-particle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
